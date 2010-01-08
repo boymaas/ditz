@@ -216,19 +216,17 @@ class ModelObject
   end
 
   def to_yaml opts={}
-    YAML::quick_emit(object_id, opts) do |out|
-      out.map(taguri, nil) do |map|
-        self.class.fields.each do |f, fops|
-          v = if @serialized_values.member?(f)
-            @serialized_values[f]
-          else
-            @serialized_values[f] = serialized_form_of f, @values[f]
-          end
-
-          map.add f.to_s, v
-        end
+    rv = {}
+    self.class.fields.each do |f, fops|
+      v = if @serialized_values.member?(f)
+        @serialized_values[f]
+      else
+        @serialized_values[f] = serialized_form_of f, @values[f]
       end
+      rv[f.to_s] = v
     end
+    lines = rv.to_yaml.split("\n")
+    (['--- !ditz.rubyforge.org,2008-03-06/issue'] + lines.drop(1)).join("\n")
   end
 
   def changed?; @changed ||= false end
