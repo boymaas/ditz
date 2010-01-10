@@ -18,7 +18,7 @@ end
 begin
   require 'rubygems'
   # list version dependant gems here.
-  gem 'kakutani-yaml_waml', '>= 0.3'
+  gem 'yaml_waml', '>= 0.3'
   gem 'trollop', '>= 1.9'
 rescue LoadError
 end
