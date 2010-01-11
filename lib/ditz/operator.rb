@@ -199,7 +199,7 @@ EOS
   end
   def add project, config, opts
     component = opts[:component] ||  project.components.first.name
-    release = opts[:release] || project.releases.first.name
+    release = opts[:release] || (project.releases.first.name rescue nil)
     with = if opts[:quick]
       {:title => opts[:quick], :desc => '', :type => :task, :component => component,
         :reporter => config.user, :release => release}
