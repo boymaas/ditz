@@ -285,7 +285,9 @@ class ModelObject
     def create vals={}, generator_args=[]
       o = self.new
       @fields.each do |fname, fopts|
-        val = if(x = vals[fname] || vals[fname.to_s])
+        x = vals[fname]
+        x = vals[fname.to_s] if x.nil?
+        val = unless x.nil?
           x
         else
           found, x = generate_field_value(o, fopts, generator_args, :interactive => false)
@@ -295,7 +297,7 @@ class ModelObject
             raise ModelError, "missing required field #{fname.inspect} on #{self.name} object (got #{vals.keys.inspect})"
           end
         end
-        o.send "#{fname}=", val if val
+        o.send "#{fname}=", val unless val.nil?
       end
       o.validate! :create, generator_args
       o
