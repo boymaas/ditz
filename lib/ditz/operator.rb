@@ -22,7 +22,7 @@ class Operator
 
     def build_opts method, args
       options_blk = @operations[method][:options_blk]
-      options_blk and options args, &options_blk or nil
+      options_blk and Trollop.options args, &options_blk or nil
     end
 
     ## parse the specs, and the commandline arguments, and resolve them. does
