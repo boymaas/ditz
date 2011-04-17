@@ -30,7 +30,12 @@ class Project
 end
 
 class Issue
-  field :claimer, :ask => false
+  field :claimer, :ask => false, :generator => :get_claimer
+
+  #alias :old_claimer :claimer
+  #def claimer
+  #  old_claimer || '(none)'
+  #end
 
   def claim who, comment, force=false
     raise Error, "already claimed by #{claimer}" if claimer && !force
@@ -103,15 +108,16 @@ class Operator
     opt :force, "Claim this issue even if someone else has claimed it", :default => false
   end
   def claim project, config, opts, issue, dev = nil
-    if dev
-      dev_full_email = project.devs ? project.devs[dev.to_sym] : nil
-      raise Error, "no nickname :#{dev} has been defined in project.yaml" unless dev_full_email
-    end
-    dev_full_email ||= config.user
-    puts "Claiming issue #{issue.name}: #{issue.title} for #{dev_full_email}."
+    #if dev
+    #  dev_full_email = project.devs ? project.devs[dev.to_sym] : nil
+    #  raise Error, "no nickname :#{dev} has been defined in project.yaml" unless dev_full_email
+    #end
+    #dev_full_email ||= config.user
+    raise Error, "no nickname: #{dev} has been defined in project.yaml" unless project.devs.has_key?( dev.to_sym )
+    puts "Claiming issue #{issue.name}: #{issue.title} for #{dev}."
     comment = ask_multiline_or_editor "Comments" unless $opts[:no_comment]
-    issue.claim dev_full_email, comment, opts[:force]
-    puts "Issue #{issue.name} marked as claimed by #{dev_full_email}"
+    issue.claim dev, comment, opts[:force]
+    puts "Issue #{issue.name} marked as claimed by #{dev}"
   end
 
   operation :unclaim, "Unclaim a claimed issue", :issue do

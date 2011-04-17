@@ -9,7 +9,7 @@ class Issue
     time_spent || 0
   end
   def get_mark_time(config, project)
-    self.mark_time || 0
+    self.mark_time || nil
   end
   def start_work(who, comment)
     self.mark_time = Time.now
@@ -38,7 +38,7 @@ class ScreenView
   def self.get_time_spent(issue)
     if issue.status == :paused
       issue.time_spent
-    elsif issue.time_spent && issue.mark_time
+    elsif issue.mark_time != 0
       issue.time_spent + (Time.now - issue.mark_time)
     else
       0
